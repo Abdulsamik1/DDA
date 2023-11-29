@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX_CITIES 10
+
+int num_cities;
+int graph[MAX_CITIES][MAX_CITIES];
+int memo[MAX_CITIES][1 << MAX_CITIES];
+
+int tsp_dp(int mask, int current_city) {
+    if (mask == (1 << num_cities) - 1) {
+        return graph[current_city][0]; // Return to the starting city
+    }
+
+    if (memo[current_city][mask] != -1) {
+        return memo[current_city][mask];
+    }
+
+    int min_cost = INT_MAX;
+
+    for (int next_city = 0; next_city < num_cities; ++next_city) {
+        if ((mask & (1 << next_city)) == 0) { // Check if the next city is not visited
+            int new_mask = mask | (1 << next_city);
+            int cost = graph[current_city][next_city] + tsp_dp(new_mask, next_city);
+            min_cost = (cost < min_cost) ? cost : min_cost;
+        }
+    }
+
+    memo[current_city][mask] = min_cost;
+    return min_cost;
+}
+
+int main() {
+    printf("Enter the number of cities (max %d): ", MAX_CITIES);
+    scanf("%d", &num_cities);
+
+    printf("Enter the adjacency matrix representing distances between cities:\n");
+    for (int i = 0; i < num_cities; ++i) {
+        for (int j = 0; j < num_cities; ++j) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    // Initialize memoization table
+    for (int i = 0; i < MAX_CITIES; ++i) {
+        for (int j = 0; j < (1 << MAX_CITIES); ++j) {
+            memo[i][j] = -1;
+        }
+    }
+
+    // Output the minimum cost of the TSP
+    int min_cost = tsp_dp(1, 0); // Start from city 0, mask = 1
+    printf("Minimum cost of TSP: %d\n", min_cost);
+
+    return 0;
+}
