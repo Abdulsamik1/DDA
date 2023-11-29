@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <limits.h>
+
+int main() {
+    int num_elements;
+
+    // Input the number of elements in the list
+    printf("Enter the number of elements in the list: ");
+    scanf("%d", &num_elements);
+
+    // Input the list of numbers
+    int numbers[num_elements];
+    printf("Enter the list of numbers:\n");
+    for (int i = 0; i < num_elements; ++i) {
+        scanf("%d", &numbers[i]);
+    }
+
+    // Initialize min and max variables
+    int min_sequence = INT_MAX;
+    int max_sequence = INT_MIN;
+
+    // Find minimum and maximum value sequences
+    for (int i = 0; i < num_elements; ++i) {
+        int current_sequence = numbers[i];
+
+        for (int j = i + 1; j < num_elements; ++j) {
+            current_sequence += numbers[j];
+
+            if (current_sequence < min_sequence) {
+                min_sequence = current_sequence;
+            }
+
+            if (current_sequence > max_sequence) {
+                max_sequence = current_sequence;
+            }
+        }
+    }
+
+    // Output the minimum and maximum value sequences
+    printf("Minimum value sequence: %d\n", min_sequence);
+    printf("Maximum value sequence: %d\n", max_sequence);
+
+    return 0;
+}
